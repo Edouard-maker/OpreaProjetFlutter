@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'wishlist.dart';
 
 class AccueilPage extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class AccueilPage extends StatefulWidget {
 class _AccueilPageState extends State<AccueilPage> {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Accueil'),
@@ -15,13 +17,14 @@ class _AccueilPageState extends State<AccueilPage> {
             IconButton(
               icon: Icon(Icons.favorite),
               onPressed: () {
-                // Action à effectuer lorsque l'utilisateur appuie sur l'icône du cœur
+
               },
             ),
             IconButton(
               icon: Icon(Icons.star),
               onPressed: () {
                 // Action à effectuer lorsque l'utilisateur appuie sur l'icône de l'étoile
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => WishlistPage()));
               },
             ),
           ],
@@ -80,10 +83,11 @@ class _AccueilPageState extends State<AccueilPage> {
                     ),
                   ),
                   Positioned(
-                    top: 16.0,
-                    left: 16.0,
-                    height: 2 * MediaQuery.of(context).size.height / 3,
-                    child: Image.network('https://st.depositphotos.com/1035837/3968/i/600/depositphotos_39685183-stock-photo-blue-sky-with-clouds-and.jpg'),
+                    bottom : 15,
+                    right: 15,
+                    height: 2 * MediaQuery.of(context).size.height / 6,
+                    width: 2 * MediaQuery.of(context).size.width / 4,
+                    child: Image.network('https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61xfJLv0DJS._AC_SX385_.jpg'),
                   ),
                 ],
               ),
