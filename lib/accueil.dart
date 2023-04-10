@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oprea_projet_flutter/favoris.dart';
 import 'wishlist.dart';
 
 class AccueilPage extends StatefulWidget {
@@ -17,7 +18,7 @@ class _AccueilPageState extends State<AccueilPage> {
             IconButton(
               icon: Icon(Icons.favorite),
               onPressed: () {
-
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => FavorisPage()));
               },
             ),
             IconButton(

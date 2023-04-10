@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'accueil.dart';
 
-class WishlistPage extends StatelessWidget {
+class FavorisPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +19,7 @@ class WishlistPage extends StatelessWidget {
             },
           ),
           title: Text(
-            'Ma liste de souhaits',
+            'Mes favoris',
             style: TextStyle(color: Colors.white),
           ),
           bottom: PreferredSize(
@@ -43,13 +43,13 @@ class WishlistPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/empty_whishlist.png',
+              'assets/empty_likes.png',
               width: 100,
               height: 100,
             ),
             SizedBox(height: 20),
             Text(
-              'Vous n\'avez pas encore liké de contenu\nCliquez sur l\'étoile pour en rajouter',
+              'Vous n\'avez pas encore liké de contenu\nCliquez sur le coeur pour en rajouter',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white),
             ),
@@ -59,4 +59,3 @@ class WishlistPage extends StatelessWidget {
     );
   }
 }
-
