@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "585179164679",
+    "project_id": "opreaprojetflutter",
+    "storage_bucket": "opreaprojetflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585179164679:android:9ae06f111f42376beebaa2",
+        "android_client_info": {
+          "package_name": "com.example.oprea_projet_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585179164679-u5h2krktbhkv3cund79tqs2rr52ongsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMu8CLxTv5864Nqi9h2w7Y0cpvMAz6JqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585179164679-u5h2krktbhkv3cund79tqs2rr52ongsm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
