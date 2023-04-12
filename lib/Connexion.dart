@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:oprea_projet_flutter/accueil.dart';
+import 'package:oprea_projet_flutter/inscription.dart';
 
 void main() => runApp(AppDebut());
 
@@ -8,9 +11,7 @@ class AppDebut extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.dark(),
       home: LoginPage(),
     );
   }
@@ -24,14 +25,27 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _mdpController = TextEditingController();
   bool _isLoading = false;
+
+  /// booléens si login ou mdp faux pour changer le style du champ de saisie
+  bool _loginError = false;
+  bool _mdpError = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        automaticallyImplyLeading: false,
+        title: Text('Connexion à votre compte'),
+        leading: IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+              return const InscriptionPage();
+            }));
+          },
+        ),
       ),
       body: Center(
         child: Form(
@@ -52,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               TextFormField(
-                controller: _passwordController,
+                controller: _mdpController,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Mot de passe',
@@ -76,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                     });
 
                     String login = _loginController.text.trim();
-                    String password = _passwordController.text.trim();
+                    String password = _mdpController.text.trim();
 
                     // On vérifie les infos de connexion
                     try {
@@ -100,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // Fonction pour vérifier les champs de connexion
   Future<void> verifyLogin(String login, String password) async {
+    await Firebase.initializeApp(); // Initialisation Firebase
     // Accéder à la collection "Mdp" de Firestore
     CollectionReference mdpCollection = FirebaseFirestore.instance.collection('Mdp');
 
@@ -108,8 +123,10 @@ class _LoginPageState extends State<LoginPage> {
 
     // Si aucun document ne correspond au login saisi, afficher un message d'erreur
     if (querySnapshot.docs.isEmpty) {
+      _loginError = true;
       print('Login incorrect');
       throw ('Login incorrect');
+
     }
 
     // Récupérer le premier document (il ne devrait y en avoir qu'un)
@@ -119,6 +136,7 @@ class _LoginPageState extends State<LoginPage> {
     String storedPassword = documentSnapshot.get('mdp');
     if (password == storedPassword) {
       print('Connexion réussie');
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AccueilPage()));
     } else {
       print('Mot de passe incorrect');
       throw ('Mot de passe incorrect');

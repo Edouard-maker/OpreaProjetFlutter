@@ -1,7 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+
+void fireCo() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+}
 
 class InscriptionPage extends StatefulWidget {
   const InscriptionPage({Key? key}) : super(key: key);
@@ -76,6 +81,7 @@ class _InscriptionPageState extends State<InscriptionPage> {
                     minimumSize: const Size.fromHeight(50),
                   ),
                   onPressed: () {
+                    fireCo();
                     FirebaseFirestore.instance.collection('Mdp').add({
                       'login': loginController.value.text,
                       'mdp': mdpController.value.text,

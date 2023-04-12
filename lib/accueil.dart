@@ -18,6 +18,7 @@ class _AccueilPageState extends State<AccueilPage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
         child: AppBar(
+          leading: null,
           backgroundColor: Color(0xFF1A2025),
           title: Text(
             'Accueil',

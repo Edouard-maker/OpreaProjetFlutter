@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oprea_projet_flutter/Connexion.dart';
 import 'accueil.dart';
 
 void main() {
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: AccueilPage(),
+      home: AppDebut(),
     );
   }
 }
