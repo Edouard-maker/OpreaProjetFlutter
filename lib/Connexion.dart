@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:oprea_projet_flutter/inscription.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const Connexion());
 }
-
 
 class Connexion extends StatelessWidget {
   const Connexion({Key? key}) : super(key: key);
@@ -30,8 +30,19 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter FIREBASE'),
+        leading: IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const InscriptionPage();
+              },
+              fullscreenDialog: true,
+            ));
+          },
+        ),
       ),
-      body: UserInformation(),
+      body: const UserInformation(),
     );
   }
 }
@@ -44,7 +55,9 @@ class UserInformation extends StatefulWidget {
 }
 
 class _UserInformationState extends State<UserInformation> {
-  final Stream<QuerySnapshot> _userStream = FirebaseFirestore.instance.collection('Mdp').snapshots();
+  final Stream<QuerySnapshot> _userStream = FirebaseFirestore.instance
+      .collection('Mdp')
+      .snapshots(); //ma collection pour les mots de passe
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -59,14 +72,14 @@ class _UserInformationState extends State<UserInformation> {
 
         return ListView(
           children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+            Map<String, dynamic> data =
+                document.data()! as Map<String, dynamic>;
             return ListTile(
               title: Text(data['login']),
               subtitle: Text(data['mdp']),
             );
           }).toList(),
         );
-
       },
     );
   }
