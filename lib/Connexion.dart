@@ -1,86 +1,127 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:oprea_projet_flutter/inscription.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const Connexion());
-}
+void main() => runApp(AppDebut());
 
-class Connexion extends StatelessWidget {
-  const Connexion({Key? key}) : super(key: key);
-
+class AppDebut extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      title: "Firebase",
-      home: const HomePage(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: LoginPage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _loginController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter FIREBASE'),
-        leading: IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) {
-                return const InscriptionPage();
-              },
-              fullscreenDialog: true,
-            ));
-          },
+        title: Text('Login'),
+      ),
+      body: Center(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                controller: _loginController,
+                decoration: InputDecoration(
+                  hintText: 'Login',
+                ),
+                validator: (value) {
+                  if (value!= null && value.isEmpty) {
+                    return 'Veuillez saisir un login';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: 'Mot de passe',
+                ),
+                validator: (value) {
+                  if (value != null && value.isEmpty) {
+                    return 'Veuillez saisir un mot de passe';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                child: Text('Se connecter'),
+                onPressed: () async {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    String login = _loginController.text.trim();
+                    String password = _passwordController.text.trim();
+
+                    // On vérifie les infos de connexion
+                    try {
+                      await verifyLogin(login, password);
+                    } catch (e) {
+                      print('Erreur : $e');
+                    } finally {
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
-      body: const UserInformation(),
     );
   }
-}
 
-class UserInformation extends StatefulWidget {
-  const UserInformation({Key? key}) : super(key: key);
+  // Fonction pour vérifier les champs de connexion
+  Future<void> verifyLogin(String login, String password) async {
+    // Accéder à la collection "Mdp" de Firestore
+    CollectionReference mdpCollection = FirebaseFirestore.instance.collection('Mdp');
 
-  @override
-  State<UserInformation> createState() => _UserInformationState();
-}
+    // Récupérer le document correspondant au login saisi
+    QuerySnapshot querySnapshot = await mdpCollection.where('login', isEqualTo: login).get();
 
-class _UserInformationState extends State<UserInformation> {
-  final Stream<QuerySnapshot> _userStream = FirebaseFirestore.instance
-      .collection('Mdp')
-      .snapshots(); //ma collection pour les mots de passe
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _userStream,
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text('erreur');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("attente");
-        }
+    // Si aucun document ne correspond au login saisi, afficher un message d'erreur
+    if (querySnapshot.docs.isEmpty) {
+      print('Login incorrect');
+      throw ('Login incorrect');
+    }
 
-        return ListView(
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data =
-                document.data()! as Map<String, dynamic>;
-            return ListTile(
-              title: Text(data['login']),
-              subtitle: Text(data['mdp']),
-            );
-          }).toList(),
-        );
-      },
-    );
+    // Récupérer le premier document (il ne devrait y en avoir qu'un)
+    QueryDocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+
+    // Vérifier que le mot de passe saisi correspond au mot de passe stocké dans Firestore
+    String storedPassword = documentSnapshot.get('mdp');
+    if (password == storedPassword) {
+      print('Connexion réussie');
+    } else {
+      print('Mot de passe incorrect');
+      throw ('Mot de passe incorrect');
+    }
   }
 }
