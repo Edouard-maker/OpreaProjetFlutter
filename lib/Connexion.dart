@@ -62,6 +62,9 @@ class _LoginPageState extends State<LoginPage> {
                   if (value!= null && value.isEmpty) {
                     return 'Veuillez saisir un login';
                   }
+                  if (_loginError) {
+                    return 'Login incorrect, tentez un autre';
+                  }
                   return null;
                 },
               ),
@@ -126,7 +129,9 @@ class _LoginPageState extends State<LoginPage> {
       _loginError = true;
       print('Login incorrect');
       throw ('Login incorrect');
-
+    }
+    else {
+      _loginError = false;
     }
 
     // Récupérer le premier document (il ne devrait y en avoir qu'un)
